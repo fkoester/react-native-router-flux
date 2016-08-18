@@ -46,10 +46,11 @@ class TabBar extends Component {
 
   render() {
     const state = this.props.navigationState;
+    const selected = state.children[state.index];
 
-    const hideTabBar = this.props.unmountScenes
-      ? true
-      : deepestExplicitValueForKey(state, 'hideTabBar');
+    const hideTabBar = this.props.unmountScenes ||
+      deepestExplicitValueForKey(state, 'hideTabBar') ||
+      (this.props.hideOnChildTabs && deepestExplicitValueForKey(selected, 'tabs'));
 
     return (
       <View
@@ -66,7 +67,7 @@ class TabBar extends Component {
             selectedIconStyle={state.tabBarSelectedItemStyle}
             iconStyle={state.tabBarIconContainerStyle}
             onSelect={this.onSelect} {...state}
-            selected={state.children[state.index].sceneKey}
+            selected={selected.sceneKey}
             pressOpacity={this.props.pressOpacity}
           >
             {state.children.filter(el => el.icon || this.props.tabIcon).map(el => {
